@@ -18,7 +18,7 @@ d3.json(url).then(function (response) {
   for (let i = 0; i < response.features.length; i++) {
     let location = response.features[i].geometry.coordinates;
     let markerColor = "";
-    console.log(response.features[i].geometry.coordinates[2]);
+    // Depth = Color,
     if (
       response.features[i].geometry.coordinates[2] >= 0 &&
       response.features[i].geometry.coordinates[2] <= 10
@@ -64,25 +64,29 @@ d3.json(url).then(function (response) {
       response.features[i].geometry.coordinates[2] <= 90
     ) {
       markerColor = "#081d58";
-    } else {
+    } else if (response.features[i].geometry.coordinates[2] >= 90) {
       markerColor = "black";
     }
 
+    // Plot the markers on map from json
     if (location) {
       L.circle([location[1], location[0]], {
         color: markerColor,
+        // Magnitude = Size,
         radius: response.features[i].properties.mag * 100000,
       })
-        .bindPopup(response.features[i].properties.place)
+
+        // Popups include additional info
+        .bindPopup(
+          " magnitude:" +
+            response.features[i].properties.mag +
+            " location:" +
+            response.features[i].properties.place +
+            " depth:" +
+            response.features[i].geometry.coordinates[2] +
+            "km"
+        )
         .addTo(myMap);
     }
   }
 });
-
-// Plot the markers on map from json
-
-// Magnitude = Size, Depth = Color,
-
-// Popups include additional info
-
-// legend with context
